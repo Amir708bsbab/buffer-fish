@@ -21,11 +21,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Install Geode CLI
+        run: |
+          curl -Lo /tmp/geode https://github.com/geode-sdk/cli/releases/latest/download/geode-linux
+          chmod +x /tmp/geode
+          sudo mv /tmp/geode /usr/local/bin/geode
+      
+      - name: Clone bindings manually
+        run: |
+          git clone --depth 1 --branch 3.0.0 https://github.com/geode-sdk/bindings.git /tmp/bindings
+      
       - name: Build the mod
-        uses: geode-sdk/build-geode-mod@main
-        with:
-          bindings: geode-sdk/bindings
-          bindings-ref: 3.0.0
+        run: |
+          geode build -t ${{ matrix.config.target }} --release \
+            --bindings /tmp/bindings
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
