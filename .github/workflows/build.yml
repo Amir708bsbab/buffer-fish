@@ -7,25 +7,27 @@ on:
 
 jobs:
   build:
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - name: Android64
-            target: android64
-          - name: Android32
-            target: android32
-
-    name: ${{ matrix.config.name }}
     runs-on: ubuntu-latest
+    container: geode-sdk/geode:latest
     
     steps:
       - uses: actions/checkout@v4
       
-      - name: Build the mod
-        uses: geode-sdk/build-geode-mod@main
+      - name: Install Dependencies
+        run: |
+          apt-get update
+          apt-get install -y git cmake python3
+        
+      - name: Build Android64
+        run: |
+          geode build -t android64 --release
+          
+      - name: Build Android32
+        run: |
+          geode build -t android32 --release
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
         with:
-          bindings: geode-sdk/bindings
-          bindings-ref: main
-          combine: true
-          target: ${{ matrix.config.target }}
+          name: buffer-fish-android
+          path: build/*.geode
