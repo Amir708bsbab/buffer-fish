@@ -27,14 +27,9 @@ jobs:
           chmod +x /tmp/geode
           sudo mv /tmp/geode /usr/local/bin/geode
       
-      - name: Clone bindings manually
-        run: |
-          git clone --depth 1 --branch 3.0.0 https://github.com/geode-sdk/bindings.git /tmp/bindings
-      
       - name: Build the mod
         run: |
-          geode build -t ${{ matrix.config.target }} --release \
-            --bindings /tmp/bindings
+          geode build -t ${{ matrix.config.target }} --release --no-bindings
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
