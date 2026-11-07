@@ -124,15 +124,17 @@ namespace {
     };
 
     constexpr Stage STAGES[] = {
-        { true, 2, 2, false },
-        { true, 4, 4, false },
-        { true, 8, 8, false },
-        { true, 16, 8, false },
-        { true, 24, 12, false },
-        { true, 32, 16, false },
-        { true, 0, 0, true },
-        { false, 0, 0, false },
-    };
+    { true, 2, 2, false },
+    { true, 4, 4, false },
+    { true, 8, 8, false },
+    { true, 16, 8, false },
+    { true, 32, 16, false },
+    { true, 64, 32, false },   // New stage
+    { true, 128, 64, false },  // New stage
+    { true, 256, 128, false }, // New stage - "forever" mode
+    { true, 0, 0, true },      // Custom
+    { false, 0, 0, false },
+};
     constexpr int STAGE_COUNT = sizeof(STAGES) / sizeof(STAGES[0]);
 
     struct QueuedInput {
