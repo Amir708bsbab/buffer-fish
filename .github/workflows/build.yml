@@ -1,33 +1,44 @@
+# go
 name: Build Mod
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
-        target: [android64, android32]
+        config:
+          - name: Windows
+            target: win
+          - name: macOS
+            target: mac
+          - name: Android32
+            target: android32
+          - name: Android64
+            target: android64
+          - name: iOS
+            target: ios
 
-    name: ${{ matrix.target }}
+    name: ${{ matrix.config.name }}
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       
-      - name: Build mod
+      - name: Build the mod
         uses: geode-sdk/build-geode-mod@main
         with:
           bindings: geode-sdk/bindings
           bindings-ref: main
-          target: ${{ matrix.target }}
-          export-pdb: false
+          combine: true
       
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: buffer-fish-${{ matrix.target }}
-          path: build/${{ matrix.target }}-release/*.geode
+          name: ${{ matrix.config.name }}
+          path: build/*.geode
