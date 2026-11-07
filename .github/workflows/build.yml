@@ -8,23 +8,30 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: geode-sdk/geode:latest
     
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install Dependencies
+      - name: Install Geode CLI
         run: |
-          apt-get update
-          apt-get install -y git cmake python3
-        
+          curl -Lo /tmp/geode https://github.com/geode-sdk/cli/releases/latest/download/geode-linux
+          chmod +x /tmp/geode
+          sudo mv /tmp/geode /usr/local/bin/geode
+      
+      - name: Install Android NDK & CMake
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build
+          # Download Android NDK r25c (stable for Geode)
+          curl -Lo /tmp/ndk.zip https://dl.google.com/android/repository/android-ndk-r25c-linux.zip
+          unzip -q /tmp/ndk.zip -d /opt/android
+          echo "ANDROID_NDK_ROOT=/opt/android/android-ndk-r25c" >> $GITHUB_ENV
+      
       - name: Build Android64
-        run: |
-          geode build -t android64 --release
-          
+        run: geode build -t android64 --release
+      
       - name: Build Android32
-        run: |
-          geode build -t android32 --release
+        run: geode build -t android32 --release
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
