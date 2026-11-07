@@ -1,4 +1,3 @@
-# go
 name: Build Mod
 
 on:
@@ -21,16 +20,24 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       
       - name: Install Geode CLI
         run: |
-          curl -Lo /tmp/geode https://github.com/geode-sdk/cli/releases/latest/download/geode-linux
-          chmod +x /tmp/geode
-          sudo mv /tmp/geode /usr/local/bin/geode
+          # Download directly to /usr/local/bin so it's automatically in PATH
+          curl -Lo /usr/local/bin/geode https://github.com/geode-sdk/cli/releases/latest/download/geode-linux
+          
+          # Make it executable
+          chmod +x /usr/local/bin/geode
+          
+          # Verify it works
+          geode --version
       
       - name: Build the mod
         run: |
-          geode build -t ${{ matrix.config.target }} --release --no-bindings
+          # Use absolute path just in case
+          /usr/local/bin/geode build -t ${{ matrix.config.target }} --release
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
