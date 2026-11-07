@@ -1,3 +1,5 @@
+// BUFFER FOREVER MODE ENABLED
+
 // Click Before Frames v2.9 (cube-style wave, wave auto-release, orb alignment, full ghost state, drift check, in-game console on F9)
 //
 // When you click (or release, in wave / robot), a hidden "ghost" player is simulated
@@ -169,7 +171,7 @@ namespace {
         bool panelOpen = false;  // closed by default, remembered for the session
         bool panelDirty = false; // v2.71: new log lines, the panel is redrawn once on the next step
         bool perfMode = false;   // v2.71: performance mode
-        double userBudget = 6.0; // v2.75: the budget from the settings (budgetMs is this click's)
+        double userBudget = 50.0; // v2.75: the budget from the settings (budgetMs is this click's)
         bool autoBudget = true;  // v2.75: budget follows the frame rate
         std::unordered_set<GameObject*> simDisabled;  // v2.75: objects a toggle orb switched off in this prediction
         std::deque<std::string> logLines;
@@ -206,9 +208,9 @@ namespace {
         bool console = false;
         double budgetMs = 6.0;
         bool practiceOnly = true;    // v2.1: only buffer in practice mode
-        int groundHorizon = 130;     // v2.1: how far ahead cube/ball/spider predictions look
+        int groundHorizon = 512;     // v2.1: how far ahead cube/ball/spider predictions look
         int releaseShift = 0;        // v2.1: delay of the last delivered press, reused for its release
-        int waveHorizon = 65;        // v2.2: how far ahead wave predictions look (mini = 15 less)
+        int waveHorizon = 256;        // v2.2: how far ahead wave predictions look (mini = 15 less)
         bool assumeOrbs = true;      // v2.2: the ghost clicks every orb it touches ("calculation mode")
         bool held1 = false, held2 = false;   // button state the ghosts are meant to be in
         bool auto1 = false, auto2 = false;   // an orb auto-click is currently held on this ghost
@@ -270,7 +272,7 @@ namespace {
         // v2.88 per-mode frames (menu's Custom tab): each game mode's own max delay, in 240/s
         // ticks, used instead of the stage's when on. Order: MODE_NAMES.
         bool perMode = false;
-        std::array<int, 8> modeTicks { 40, 4, 40, 40, 20, 40, 40, 40 };
+        std::array<int, 8> modeTicks { 512, 256, 512, 512, 256, 512, 512, 512 };
         // v3.0 Modes page: bit (mode * 2 + mini) set = that mode isn't buffered at all (raw clicks)
         uint32_t modeOff = 0;
         bool perfLog = false;        // v2.21: log time / runs / ghost ticks per click
@@ -304,7 +306,7 @@ namespace {
         bool usedThisAttempt = false;      // v2.46: the buffer was on at some point of this attempt
         bool learn = true;           // v2.13: per-level memory learned from your runs
         bool fullState = true;       // v2.11.1: copy the full v2.8 player state into the ghost
-        int orbWindow = 16;          // v2.6: how far ahead (ticks) an orb may be for that
+        int orbWindow = 128;          // v2.6: how far ahead (ticks) an orb may be for that
         int simTick = 0;             // v2.6: tick of the current run
         int firstOrbTick = -1;       // v2.6: first tick the current run touched an orb
         int lastOrbTick = -1;        // v2.78: last tick the current run was inside an orb
