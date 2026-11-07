@@ -23,21 +23,14 @@ jobs:
         with:
           submodules: recursive
       
-      - name: Install Geode CLI
+      - name: Install Geode CLI via pip
         run: |
-          # Download directly to /usr/local/bin so it's automatically in PATH
-          curl -Lo /usr/local/bin/geode https://github.com/geode-sdk/cli/releases/latest/download/geode-linux
-          
-          # Make it executable
-          chmod +x /usr/local/bin/geode
-          
-          # Verify it works
+          pip install geode-cli
           geode --version
       
       - name: Build the mod
         run: |
-          # Use absolute path just in case
-          /usr/local/bin/geode build -t ${{ matrix.config.target }} --release
+          geode build -t ${{ matrix.config.target }} --release
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
