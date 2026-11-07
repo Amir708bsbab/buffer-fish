@@ -23,14 +23,9 @@ jobs:
         with:
           submodules: recursive
       
-      - name: Install Geode CLI via pip
-        run: |
-          pip install geode-cli
-          geode --version
-      
       - name: Build the mod
-        run: |
-          geode build -t ${{ matrix.config.target }} --release
+        uses: geode-sdk/build-geode-mod@main
+        # NO bindings specified - let the action handle it automatically
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
