@@ -1,31 +1,26 @@
-#on
 name: Build Mod
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch: # Allows manual triggering
+  workflow_dispatch:
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        target: [win, mac, android32, android64, ios]
-    
+  build-android:
     runs-on: ubuntu-latest
     container: geode-sdk/geode:latest
     
     steps:
       - uses: actions/checkout@v3
       
-      - name: Build ${{ matrix.target }}
-        run: |
-          geode build -t ${{ matrix.target }} --release
+      - name: Build Android 64-bit
+        run: geode build -t android64 --release
+        
+      - name: Build Android 32-bit
+        run: geode build -t android32 --release
       
-      - name: Upload Artifact
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: buffer-fish-${{ matrix.target }}
+          name: buffer-fish-android
           path: build/*.geode
